@@ -103,6 +103,10 @@
       with_items:
         - port: "3000" # Grafana
           proto: "tcp"
+        - port: "80" # Grafana
+          proto: "tcp"
+        - port: "443" # Grafana
+          proto: "tcp"
 
     - name: Rate limit SSH login attempts
       ufw:

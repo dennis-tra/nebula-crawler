@@ -59,13 +59,27 @@ services:
     container_name: nebula_grafana
     image: grafana/grafana:7.5.9
     restart: always
-    ports:
-      - "3000:3000"
     volumes:
       - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
       - ./grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
 #       - ./dashboards:/var/lib/grafana/dashboards
       - grafana_data:/var/lib/grafana
+    networks:
+      nebula:
+  nginx:
+    container_name: nebula_nginx
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.server.conf:/etc/nginx/sites-available/{{ domain_name }}.conf
+      - ./nginx.letsencrypt.conf:/etc/nginx/nginxconfig.io/letsencrypt.conf
+      - ./nginx.security.conf:/etc/nginx/nginxconfig.io/security.conf
+      - ./nginx.general.conf:/etc/nginx/nginxconfig.io/general.conf
+      - ./nginx.proxy.conf:/etc/nginx/nginxconfig.io/proxy.conf
+    ports:
+      - 80:80
+      - 443:443
     networks:
       nebula:
 networks:

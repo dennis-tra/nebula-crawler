@@ -19,6 +19,29 @@
     - docker-entrypoint.sh
     - grafana-dashboards.yml
     - grafana-datasources.yml
+    - nginx.conf
+    - nginx.general.conf
+    - nginx.letsencrypt.conf
+    - nginx.proxy.conf
+    - nginx.security.conf
+    - nginx.server.conf
+    - nginx.server.ssloff.conf
+
+- name: Checking if Diffie-Hellman keys exist
+  stat:
+    path: /home/{{ remote_user_name }}/docker/dhparam.pem
+  register: dhparam_result
+
+- name: Create the file, if it doesnt exist already
+  command: openssl dhparam -out /home/{{ remote_user_name }}/docker/dhparam.pem 2048
+  when: not dhparam_result.stat.exists
+
+- name: Creating Let's Encrypt ACME-Challenge directory
+  file:
+    path: /home/{{ remote_user_name }}/_letsencrypt
+    state: directory
+    owner: "{{ remote_user_name }}"
+    group: "{{ remote_user_name }}"
 
 - name: Copying crawl configuration files
   template:
